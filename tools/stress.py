@@ -21,6 +21,9 @@ SMALL = {
     'akserek': lambda r: gens.akserek(r, n=r.randint(2, 4), m=r.randint(1, 4), maxv=r.randint(3, 12)),
     'bitcount': lambda r: gens.bitcount(r, n=r.randint(1, 6), bits=r.randint(1, 6)),
     'perm-sort': lambda r: gens.perm_sort(r, n=r.randint(2, 6), q=r.randint(0, 3)),
+    'nauryz': lambda r: gens.nauryz(r, n=r.randint(1, 9), m=r.randint(1, 10), maxv=r.randint(1, 12)),
+    'tree-shifts': lambda r: gens.tree_shifts(r, T=1, n=r.randint(1, 8), maxw=r.choice([3, 50]), star=r.random() < 0.1),
+    'alchemy': lambda r: gens.alchemy(r, n=r.randint(1, 5), m=r.randint(1, 5), maxv=r.choice([12, 30])),
 }
 
 

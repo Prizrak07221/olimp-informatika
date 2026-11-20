@@ -178,12 +178,18 @@ def perm_sort(rng, n=5, q=4, identity=False):
 
 # ---------- частично решённые задачи (тесты только для малых подзадач) ----------
 
-def alchemy(rng, n=4, m=1, maxv=20):
-    vals = rng.sample(range(1, maxv + 1), n + m)
-    return f'{n} {m}\n{" ".join(map(str, vals[:n]))}\n{" ".join(map(str, vals[n:]))}\n'
+def alchemy(rng, n=4, m=1, maxv=20, nearly=False):
+    vals = rng.sample(range(1, max(maxv, n + m) + 1), n + m)
+    a, b = vals[:n], vals[n:]
+    if nearly:  # почти отсортированный массив: длинные возрастающие серии интереснее
+        a.sort()
+        for _ in range(rng.randint(1, 4)):
+            i, j = rng.randrange(n), rng.randrange(n)
+            a[i], a[j] = a[j], a[i]
+    return f'{n} {m}\n{" ".join(map(str, a))}\n{" ".join(map(str, b))}\n'
 
 
-def tree_shifts(rng, T=2, n=6, maxw=9, star=False, path=False):
+def tree_shifts(rng, T=2, n=6, maxw=9, star=False, path=False, single=False):
     parts = [str(T)]
     for _ in range(T):
         if star:
@@ -201,7 +207,7 @@ def tree_shifts(rng, T=2, n=6, maxw=9, star=False, path=False):
         parts.append(' '.join(str(rng.randint(0, maxw)) for _ in range(n)))
         for v in range(1, n + 1):
             parts.append(' '.join([str(len(g[v]))] + list(map(str, g[v]))))
-        L = rng.randint(1, n); R = rng.randint(L, n)
+        L = rng.randint(1, n); R = L if single else rng.randint(L, n)
         parts.append(f'{L} {R}')
     return '\n'.join(parts) + '\n'
 

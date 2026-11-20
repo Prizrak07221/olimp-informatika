@@ -41,6 +41,8 @@ self.onmessage = async (e) => {
     if (m.type === 'init') {
       self.postMessage({ id: m.id, ok: true });
     } else if (m.type === 'run') {
+      // numpy и другие пакеты Pyodide подгружаются по import в коде
+      await py.loadPackagesFromImports(m.code);
       const fn = py.globals.get('__oly_run');
       const res = fn(m.code, m.input);
       const [out, err, time] = res.toJs();

@@ -222,7 +222,108 @@ def animals(inp):
                 return f'{c} {hs}'
 
 
+def alchemy(inp):
+    """Поиск в ширину по состояниям (массив, оставшиеся числа b)."""
+    d = inp.split()
+    n, m = int(d[0]), int(d[1])
+    a = tuple(map(int, d[2:2 + n]))
+    b = frozenset(map(int, d[2 + n:2 + n + m]))
+    start = (a, b)
+    dist = {start: 0}
+    dq = deque([start])
+    while dq:
+        arr, rest = dq.popleft()
+        if all(arr[i] < arr[i + 1] for i in range(len(arr) - 1)):
+            return str(dist[(arr, rest)])
+        for rem in {min(arr), max(arr)}:
+            base = tuple(x for x in arr if x != rem)
+            for x in rest:
+                for pos in range(len(base) + 1):
+                    nxt = (base[:pos] + (x,) + base[pos:], rest - {x})
+                    if nxt not in dist:
+                        dist[nxt] = dist[(arr, rest)] + 1
+                        dq.append(nxt)
+    return '-1'
+
+
+def nauryz(inp):
+    """НВП по всей последовательности из m копий (n·m элементов)."""
+    from bisect import bisect_left
+    d = list(map(int, inp.split()))
+    n, m = d[:2]
+    a = d[2:2 + n]
+    tails = []
+    for pos in range(n * m):
+        k = bisect_left(tails, a[pos % n])
+        if k == len(tails):
+            tails.append(a[pos % n])
+        else:
+            tails[k] = a[pos % n]
+    return f'{len(tails)}\n'
+
+
+import sys
+
+
+def _tree_shifts_main():
+    data = sys.stdin.read().split()
+    p = 0
+    T = int(data[p]); p += 1
+    out = []
+    for _ in range(T):
+        n = int(data[p]); p += 1
+        w = tuple(int(x) for x in data[p:p + n]); p += n
+        g = []
+        for v in range(n):
+            k = int(data[p]); p += 1
+            g.append([int(x) - 1 for x in data[p:p + k]])
+            p += k
+        L, R = int(data[p]) - 1, int(data[p + 1]) - 1
+        p += 2
+
+        def toughness(state):
+            return sum(state[u] for v in range(L, R + 1) for u in g[v])
+
+        # Полный перебор достижимых раскладок весов (для n <= 8)
+        seen = {w}
+        dq = deque([w])
+        best = toughness(w)
+        while dq:
+            cur = dq.popleft()
+            for v in range(n):
+                nb = g[v]
+                if len(nb) < 2:
+                    continue
+                nxt = list(cur)
+                for i, u in enumerate(nb):
+                    nxt[u] = cur[nb[(i + 1) % len(nb)]]
+                nxt = tuple(nxt)
+                if nxt not in seen:
+                    seen.add(nxt)
+                    dq.append(nxt)
+                    best = max(best, toughness(nxt))
+        out.append(best)
+    print('\n'.join(map(str, out)))
+
+
+def tree_shifts(inp):
+    """Перебор всех достижимых раскладок весов (BFS)."""
+    import io as _io, sys as _sys, contextlib as _cl
+    old = _sys.stdin
+    _sys.stdin = _io.StringIO(inp)
+    buf = _io.StringIO()
+    try:
+        with _cl.redirect_stdout(buf):
+            _tree_shifts_main()
+    finally:
+        _sys.stdin = old
+    return buf.getvalue()
+
+
 BRUTE = {
+    'tree-shifts': tree_shifts,
+    'nauryz': nauryz,
+    'alchemy': alchemy,
     'groups': groups, 'hanabi': hanabi, 'brackets': brackets, 'hurdles': hurdles,
     'target-mst': target_mst, 'contact': contact, 'akserek': akserek,
     'bitcount': bitcount, 'perm-sort': perm_sort, 'table-area': table_area,

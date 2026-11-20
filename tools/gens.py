@@ -249,8 +249,10 @@ def quantum(rng, n=6, m=8, k=8, q=5, one_out=False, unique=False, r_is_k=False):
     return '\n'.join(lines) + '\n'
 
 
-def tree_merge(rng, n=8, q=8, star=False, no_ops=False, same=False, path=False):
-    if star:
+def tree_merge(rng, n=8, q=8, star=False, no_ops=False, same=False, path=False, binary=False):
+    if binary:
+        edges = [(v, v // 2) for v in range(2, n + 1)]
+    elif star:
         edges = [(1, v) for v in range(2, n + 1)]
     elif path:
         edges = [(v - 1, v) for v in range(2, n + 1)]

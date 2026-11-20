@@ -23,6 +23,9 @@ SMALL = {
     'perm-sort': lambda r: gens.perm_sort(r, n=r.randint(2, 6), q=r.randint(0, 3)),
     'nauryz': lambda r: gens.nauryz(r, n=r.randint(1, 9), m=r.randint(1, 10), maxv=r.randint(1, 12)),
     'tree-shifts': lambda r: gens.tree_shifts(r, T=1, n=r.randint(1, 8), maxw=r.choice([3, 50]), star=r.random() < 0.1),
+    'all-in-one': lambda r: gens.all_in_one(r, r.randint(2, 10), r.randint(1, 15), r.randint(1, 6)),
+    'quantum': lambda r: gens.quantum(r, r.randint(2, 10), r.randint(1, 30), r.randint(1, 20), r.randint(1, 10)),
+    'tree-merge': lambda r: gens.tree_merge(r, r.randint(1, 12), r.randint(1, 20), path=r.random() < 0.2),
     'alchemy': lambda r: gens.alchemy(r, n=r.randint(1, 5), m=r.randint(1, 5), maxv=r.choice([12, 30])),
 }
 

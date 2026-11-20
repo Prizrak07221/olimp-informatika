@@ -320,7 +320,168 @@ def tree_shifts(inp):
     return buf.getvalue()
 
 
+def _all_in_one_main():
+    data = sys.stdin.read().split()
+    p = 0
+    n, m = int(data[p]), int(data[p + 1]); p += 2
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        u, v, w = int(data[p]), int(data[p + 1]), int(data[p + 2]); p += 3
+        adj[u].append((w, v))
+        adj[v].append((w, u))
+    for v in range(1, n + 1):
+        adj[v].sort(reverse=True)
+
+    # Для каждой стартовой вершины моделируем мысль, пока состояние
+    # (откуда пришли, где сейчас) не повторится.
+    visited = [None] * (n + 1)
+    for s in range(1, n + 1):
+        seen_states = set()
+        seen = {s}
+        prev, cur = 0, s
+        while (prev, cur) not in seen_states:
+            seen_states.add((prev, cur))
+            nxt = None
+            for w, u in adj[cur]:
+                if u != prev:
+                    nxt = u
+                    break
+            if nxt is None:      # единственный сосед — тот, откуда пришли
+                nxt = prev
+            prev, cur = cur, nxt
+            seen.add(cur)
+        visited[s] = seen
+    q = int(data[p]); p += 1
+    out = []
+    for _ in range(q):
+        k = int(data[p]); p += 1
+        need = [int(x) for x in data[p:p + k]]; p += k
+        out.append(sum(1 for s in range(1, n + 1) if all(c in visited[s] for c in need)))
+    print('\n'.join(map(str, out)))  # подзадачи 1-2 (n, m, q <= 1000)
+
+
+def all_in_one(inp):
+    """Моделирование мысли из каждой стартовой вершины."""
+    import io as _io, sys as _sys, contextlib as _cl
+    old = _sys.stdin
+    _sys.stdin = _io.StringIO(inp)
+    buf = _io.StringIO()
+    try:
+        with _cl.redirect_stdout(buf):
+            _all_in_one_main()
+    finally:
+        _sys.stdin = old
+    return buf.getvalue()
+
+
+def _quantum_main():
+    data = sys.stdin.read().split()
+    p = 0
+    n, m = int(data[p]), int(data[p + 1]); p += 2
+    out_edges = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        u, v = int(data[p]), int(data[p + 1]); p += 2
+        out_edges[u].append(v)
+    k, q = int(data[p]), int(data[p + 1]); p += 2
+    a = [int(x) for x in data[p:p + k]]; p += k
+    res = []
+    for _ in range(q):
+        l, r = int(data[p]) - 1, int(data[p + 1]) - 1
+        p += 2
+        # Электрон в v уходит, если у v есть ребро в вершину 1
+        # или в вершину, из которой электрон уже ушёл.
+        empty = {1}
+        signals = 0
+        for i in range(l, r + 1):
+            v = a[i]
+            if v in empty:
+                continue
+            if any(u in empty for u in out_edges[v]):
+                empty.add(v)
+                signals += 1
+        res.append(signals)
+    print('\n'.join(map(str, res)))  # O(q * k * deg): подзадачи 1-2
+
+
+def quantum(inp):
+    """Прямое моделирование каждого эксперимента."""
+    import io as _io, sys as _sys, contextlib as _cl
+    old = _sys.stdin
+    _sys.stdin = _io.StringIO(inp)
+    buf = _io.StringIO()
+    try:
+        with _cl.redirect_stdout(buf):
+            _quantum_main()
+    finally:
+        _sys.stdin = old
+    return buf.getvalue()
+
+
+def _tree_merge_main():
+    data = sys.stdin.read().split()
+    p = 0
+    n, q = int(data[p]), int(data[p + 1]); p += 2
+    val = [0] + [int(x) for x in data[p:p + n]]; p += n
+    adj = [set() for _ in range(n + 1)]
+    for _ in range(n - 1):
+        u, v = int(data[p]), int(data[p + 1]); p += 2
+        adj[u].add(v)
+        adj[v].add(u)
+    out = []
+    for _ in range(q):
+        if data[p] == '1':
+            v = int(data[p + 1]); p += 2
+            nb = sorted(adj[v])
+            if len(nb) > 1:
+                keep = nb[0]
+                for u in nb[1:]:
+                    val[keep] += val[u]
+                    for w in adj[u]:
+                        if w != v:
+                            adj[w].discard(u)
+                            adj[w].add(keep)
+                            adj[keep].add(w)
+                    adj[v].discard(u)
+                    adj[u] = set()
+        else:
+            v, u = int(data[p + 1]), int(data[p + 2]); p += 3
+            # путь v -> u обходом в ширину, затем сумма значений на нём
+            par = {v: 0}
+            dq = deque([v])
+            while dq:
+                x = dq.popleft()
+                if x == u:
+                    break
+                for y in adj[x]:
+                    if y not in par:
+                        par[y] = x
+                        dq.append(y)
+            s, x = 0, u
+            while x != 0:
+                s += val[x]
+                x = par[x]
+            out.append(s)
+    print('\n'.join(map(str, out)))  # O(n) на запрос — подзадача N, Q <= 1000
+
+
+def tree_merge(inp):
+    """Прямое моделирование: множества соседей + обход в ширину для пути."""
+    import io as _io, sys as _sys, contextlib as _cl
+    old = _sys.stdin
+    _sys.stdin = _io.StringIO(inp)
+    buf = _io.StringIO()
+    try:
+        with _cl.redirect_stdout(buf):
+            _tree_merge_main()
+    finally:
+        _sys.stdin = old
+    return buf.getvalue()
+
+
 BRUTE = {
+    'tree-merge': tree_merge,
+    'quantum': quantum,
+    'all-in-one': all_in_one,
     'tree-shifts': tree_shifts,
     'nauryz': nauryz,
     'alchemy': alchemy,

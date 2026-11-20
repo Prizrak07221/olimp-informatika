@@ -46,7 +46,7 @@
     w: null, seq: 0, pending: new Map(), ready: null,
     start() {
       if (this.w) return this.ready;
-      this.w = new Worker('js/judge-worker.js?v=3');
+      this.w = new Worker('js/judge-worker.js?v=4');
       this.w.onmessage = (e) => { const p = this.pending.get(e.data.id); if (p) { this.pending.delete(e.data.id); p.resolve(e.data); } };
       this.w.onerror = (e) => { this.pending.forEach((p) => p.reject(new Error(e.message || 'Ошибка воркера'))); this.pending.clear(); };
       this.ready = this.call({ type: 'init' }, 120000);

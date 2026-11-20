@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Олимп.Инфо — подготовка к олимпиаде по информатике</title>
+<meta name="description" content="Задачи Республиканской олимпиады по информатике (Казахстан) с разборами, проверкой решений в браузере, тестами по темам и пробными турами.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b5bdb'/%3E%3Ctext x='16' y='22' font-size='16' font-family='monospace' text-anchor='middle' fill='white'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css?v=1">
+<script>
+  try { var t = localStorage.getItem('oly-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#/"><span class="logo-mark">{}</span> Олимп.Инфо</a>
+    <nav class="nav" id="nav">
+      <a href="#/problems" data-nav="problems">Задачи</a>
+      <a href="#/quiz" data-nav="quiz">Тесты</a>
+      <a href="#/theory" data-nav="theory">Теория</a>
+      <a href="#/contest" data-nav="contest">Пробный тур</a>
+      <a href="#/progress" data-nav="progress">Прогресс</a>
+    </nav>
+    <button class="icon-btn" id="themeBtn" title="Сменить тему" aria-label="Сменить тему">◐</button>
+  </div>
+</header>
+<main id="app" class="wrap"></main>
+<footer class="foot wrap">
+  Задачи — Республиканская олимпиада по информатике (Казахстан), условия пересказаны кратко.
+  Решения на Python проверены сравнением с перебором. Прогресс хранится только в этом браузере.
+</footer>
+<script src="data/content.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>

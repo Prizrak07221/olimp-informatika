@@ -1,0 +1,1 @@
+[{"in":"3\nrrr\nrrr\nggg\nyyy\nbbb\nbbb\nggg\nyyy\n","out":"possible\n1\n2 b","sub":0,"sample":true},{"in":"3\nrrg\nybb\nbgg\nbgg\ngrr\nbby\nyyr\nyyr\n","out":"possible\n2\n2 d\n1 3 d","sub":0,"sample":true}]
